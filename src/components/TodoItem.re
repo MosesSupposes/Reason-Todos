@@ -7,7 +7,7 @@ type t = {
 [@react.component]
 let make = (~todo: t) => {
   <div className="todoItem">
-    <p> {React.string(todo.task)} </p>
+    <span> {React.string(todo.task)} </span>
     <input type_="checkbox" checked={todo.completed} />
   </div>;
 };
