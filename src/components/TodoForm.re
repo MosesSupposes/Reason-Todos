@@ -11,11 +11,7 @@ let make = (~nextId: int, ~updateTodos) => {
 
   let handleSubmit = event => {
     ReactEvent.Form.preventDefault(event);
-    updateTodos({
-      id: nextId,
-      task: ReactEvent.Form.target(event)##value,
-      completed: false,
-    });
+    updateTodos({id: nextId, task: todoItem, completed: false});
   };
 
   <form onSubmit=handleSubmit>
