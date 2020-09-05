@@ -1,15 +1,28 @@
-type state = {count: int};
+type state = {
+  todoItems: list(TodoItem.t),
+  nextTodo: string,
+  nextId: int,
+};
 
 type action =
-  | Increment
-  | Decrement;
+  | AddTodoItem(TodoItem.t);
 
-let initialState = {count: 0};
+let initialState: state = {
+  todoItems: [
+    {id: 0, task: "Debug this app", completed: false},
+    {id: 1, task: "Go clothes shopping", completed: false},
+  ],
+  nextTodo: "",
+  nextId: 2,
+};
 
 let reducer = (state, action) =>
   switch (action) {
-  | Increment => {count: state.count + 1}
-  | Decrement => {count: state.count - 1}
+  | AddTodoItem(todoItem) => {
+      ...state,
+      nextId: state.nextId + 1,
+      todoItems: List.append([todoItem], state.todoItems),
+    }
   };
 
 [@react.component]
@@ -18,23 +31,9 @@ let make = () => {
 
   <main>
     <TodoForm
-      text="Hello"
-      inputs=[
-        {name: "foo", placeholder: "foo"},
-        {name: "bar", placeholder: "bar"},
-      ]
+      nextId={state.nextId}
+      updateTodos={newTodoItem => dispatch(AddTodoItem(newTodoItem))}
     />
-    {React.string("Simple counter with reducer")}
-    <div>
-      <button onClick={_ => dispatch(Decrement)}>
-        {React.string("Decrement")}
-      </button>
-      <span className="counter">
-        {state.count |> string_of_int |> React.string}
-      </span>
-      <button onClick={_ => dispatch(Increment)}>
-        {React.string("Increment")}
-      </button>
-    </div>
+    <TodoList todos={state.todoItems} />
   </main>;
 };
