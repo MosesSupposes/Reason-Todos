@@ -1,24 +1,24 @@
-let styles = {
-  "input": ReactDOM.Style.make(~display="block", ~margin=".5rem 0", ()),
-};
-
-type input = {
-  name: string,
-  placeholder: string,
-};
+include TodoItem;
 
 [@react.component]
-let make = (~text: string, ~inputs: list(input)) => {
-  <form>
-    {inputs
-     |> List.map(input =>
-          <input
-            style=styles##input
-            name={input.name}
-            placeholder={input.placeholder}
-          />
-        )
-     |> Array.of_list
-     |> ReasonReact.array}
+let make = (~nextId: int, ~updateTodos) => {
+  let (todoItem, setTodoItem) = React.useState(() => "");
+
+  let handleChange = event => {
+    setTodoItem(todoItem => ReactEvent.Form.target(event)##value);
+    ();
+  };
+
+  let handleSubmit = event => {
+    ReactEvent.Form.preventDefault(event);
+    updateTodos({
+      id: nextId,
+      task: ReactEvent.Form.target(event)##value,
+      completed: false,
+    });
+  };
+
+  <form onSubmit=handleSubmit>
+    <input placeholder="Enter a task" value=todoItem onChange=handleChange />
   </form>;
 };
